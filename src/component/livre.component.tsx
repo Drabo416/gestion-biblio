@@ -1,12 +1,22 @@
 import { Box, Typography } from "@mui/material";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { RouteName } from "../constant/route.constant";
 
-export default function LivreComponent() {
+export default function LivreComponent({ data }) {
+  const navigate = useNavigate();
   return (
-    <Box width={250} my={2} mx={1} borderRadius={2}>
+    <Box
+      onClick={() => navigate(`${RouteName.livre}/${data.id}`)}
+      width={250}
+      my={2}
+      sx={{ cursor: "pointer" }}
+      mx={1}
+      borderRadius={2}
+    >
       <Box
         sx={{
-          backgroundImage:
-            "url(https://cdn.franceloisirs.ch/2735154-1733319-thickbox/l-art-subtil-de-s-en-foutre.jpg)",
+          backgroundImage: `url(${data.imageUrl?.trim()})`,
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           height: 300,
@@ -22,11 +32,15 @@ export default function LivreComponent() {
         my={3}
       >
         <Typography mt={2} ml={1} fontSize={18} fontWeight={"bold"}>
-          Lorem ipsum, dolor
+          {data?.titre}
         </Typography>
-        <Typography ml={1}>Auteur: Lorem lorem</Typography>
-        <Typography ml={1}>Date de sortie: 20-10-2023</Typography>
-        <Typography ml={1}>Categorie: Lorem lorem</Typography>
+        <Typography ml={1}>Auteur: {data?.auteur}</Typography>
+        <Typography ml={1}>
+          Disponible:{" "}
+          {data.exemplaire?.findIndex((item) => item.disponilbe == true) == -1
+            ? "Non"
+            : "Oui"}
+        </Typography>
       </Box>
     </Box>
   );

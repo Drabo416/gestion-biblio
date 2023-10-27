@@ -1,8 +1,30 @@
 import { Box, Button, Typography } from "@mui/material";
 import HeaderComponent from "../component/header.component";
 import { colors } from "../theme/color.theme";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useRequest } from "../Rethinktecture/hook/fetch-data.hook";
+import { GET_RESOURCE_REQUEST } from "../Rethinktecture/Store/reducers/action";
+import { RouteName } from "../constant/route.constant";
 
 export default function LivrePage() {
+  const [livre, setLivre] = useState({});
+  const { id } = useParams();
+  const { fetchData } = useRequest();
+  const navigate = useNavigate();
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await fetchData({
+        type: GET_RESOURCE_REQUEST,
+        uri: `livre/${id}`,
+      });
+      if (error.code == -1) {
+        setLivre(data);
+      } else {
+        // alert("Une erreur s'est produite, veuillez réessayer");
+      }
+    })();
+  }, [fetchData]);
   return (
     <Box
       width={"100%"}
@@ -19,13 +41,12 @@ export default function LivrePage() {
           fontWeight={"bold"}
           mb={3}
         >
-          TITRE DU LIVRE
+          {livre?.titre}
         </Typography>
         <Box display={"flex"} justifyContent={"center"}>
           <Box
             sx={{
-              backgroundImage:
-                "url(https://cdn.franceloisirs.ch/2735154-1733319-thickbox/l-art-subtil-de-s-en-foutre.jpg)",
+              backgroundImage: `url(${livre.imageUrl})`,
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
               height: 500,
@@ -43,10 +64,7 @@ export default function LivrePage() {
               py={2}
               mt={5}
             >
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Est,
-              odit repellat, nihil distinctio officiis maiores ipsa, delectus
-              blanditiis explicabo voluptatibus saepe nam dolorum eius maxime
-              porro nemo adipisci nobis quo.
+              {livre.description}
             </Box>
             <Box
               bgcolor={colors.black[100]}
@@ -58,10 +76,16 @@ export default function LivrePage() {
               borderRadius={5}
               mt={5}
             >
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Est,
-              odit repellat, nihil distinctio officiis maiores ipsa, delectus
-              blanditiis explicabo voluptatibus saepe nam dolorum eius maxime
-              porro nemo adipisci nobis quo.
+              <Typography>Auteur: {livre.auteur}</Typography>
+              <Typography>Catégorie: {livre.categorie?.label}</Typography>
+              <Typography>
+                Disponible:{" "}
+                {livre.exemplaire?.findIndex(
+                  (item) => item.disponilbe == true
+                ) == -1
+                  ? "Non"
+                  : "Oui"}
+              </Typography>
             </Box>
             <Box
               display={"flex"}
@@ -70,8 +94,13 @@ export default function LivrePage() {
               mt={5}
               justifyContent={"space-between"}
             >
-              <Button>Retour</Button>
-              <Button>Bibliographie num.</Button>
+              <Button onClick={() => navigate(RouteName.index)}>Retour</Button>
+              <Button
+                href="https://international.scholarvox.com/"
+                target="_blank"
+              >
+                Bibliographie num.
+              </Button>
             </Box>
           </Box>
         </Box>
