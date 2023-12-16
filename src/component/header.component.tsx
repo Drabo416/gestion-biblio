@@ -1,5 +1,4 @@
 import { Box, Button, Input, TextField } from "@mui/material";
-import { colors } from "../theme/color.theme";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import { RouteName } from "../constant/route.constant";
